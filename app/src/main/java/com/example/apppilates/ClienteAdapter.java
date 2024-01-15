@@ -22,17 +22,19 @@ import java.util.List;
 
 public class ClienteAdapter extends RecyclerView.Adapter<ClienteAdapter.ViewHolder> {
 
+    public interface OnCheckedChangeListener {
+        void onItemCheckedChanged(String nombreCliente, boolean isChecked);
+    }
+
     View view;
     Context context;
     ArrayList<String> arrayList;
+    OnCheckedChangeListener listener;
 
-    public ClienteAdapter(Context context, ArrayList<String> arrayList) {
+    public ClienteAdapter(Context context, ArrayList<String> arrayList, OnCheckedChangeListener listener) {
         this.context = context;
         this.arrayList = arrayList;
-    }
-
-    public View getView(){
-        return view;
+        this.listener = listener;
     }
 
     @NonNull
@@ -51,6 +53,14 @@ public class ClienteAdapter extends RecyclerView.Adapter<ClienteAdapter.ViewHold
         holder.checkBox.setOnCheckedChangeListener((buttonView, isCheckedNew) -> {
             // Actualizar el estado del CheckBox en la base de datos
             actualizarEstadoCheckBox(arrayList.get(position), isCheckedNew);
+
+            listener.onItemCheckedChanged(arrayList.get(position), isCheckedNew);
+
+            if (isCheckedNew) {
+                arrayList.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, getItemCount());
+            }
         });
     }
 
@@ -74,15 +84,15 @@ public class ClienteAdapter extends RecyclerView.Adapter<ClienteAdapter.ViewHold
     private boolean obtenerEstadoCheckBox(String nombreCliente) {
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(context, "administracion", null, 1);
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
-        String[] columns = {"pago"};
-        String selection = "nombre=?";
+        String[] columns = {"pagado"};
+        String selection = "nombre_cliente=?";
         String[] selectionArgs = {nombreCliente};
 
-        Cursor cursor = BaseDeDatos.query("clientes", columns, selection, selectionArgs, null, null, null);
+        Cursor cursor = BaseDeDatos.query("pagos", columns, selection, selectionArgs, null, null, null);
 
         boolean isChecked = false;
         if (cursor != null && cursor.moveToFirst()) {
-            isChecked = cursor.getInt(cursor.getColumnIndex("pago")) == 1;
+            isChecked = cursor.getInt(cursor.getColumnIndex("pagado")) == 1;
             cursor.close();
         }
         BaseDeDatos.close();
@@ -93,12 +103,12 @@ public class ClienteAdapter extends RecyclerView.Adapter<ClienteAdapter.ViewHold
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(context, "administracion", null, 1);
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
         ContentValues valores = new ContentValues();
-        valores.put("pago", isChecked ? 1 : 0);
+        valores.put("pagado", isChecked ? true : false);
 
-        String whereClause = "nombre=?";
+        String whereClause = "nombre_cliente=?";
         String[] whereArgs = {nombreCliente};
 
-        BaseDeDatos.update("clientes", valores, whereClause, whereArgs);
+        BaseDeDatos.update("pagos", valores, whereClause, whereArgs);
         BaseDeDatos.close();
     }
 }

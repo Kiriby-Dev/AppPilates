@@ -21,7 +21,7 @@ import com.example.apppilates.R;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class pagosFragment extends Fragment {
+public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedChangeListener{
 
     RecyclerView lista;
     TextView saldo;
@@ -37,29 +37,31 @@ public class pagosFragment extends Fragment {
         lista = view.findViewById(R.id.listaPagos);
         saldo = view.findViewById(R.id.saldoTextView);
 
-        saldo.setText("$" + ObtenerSaldo());
-
         ArrayList<String> nombres = obtenerListaClientes();
 
         lista.setLayoutManager(new LinearLayoutManager(getContext()));
-        lista.setAdapter(new ClienteAdapter(getContext(), nombres));
+        lista.setAdapter(new ClienteAdapter(getContext(), nombres, this));
 
-        ReinicioPago();
+        //ReinicioPago();
 
         return view;
     }
 
+    public void onItemCheckedChanged(String nombreCliente, boolean isChecked) {
+        // Actualizar el TextView del saldo cada vez que se marca un CheckBox
+        saldo.setText("$" + ObtenerSaldo());
+    }
 
     public ArrayList<String> obtenerListaClientes() {
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(requireContext(), "administracion", null, 1);
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
 
-        Cursor fila = BaseDeDatos.rawQuery("SELECT nombre FROM clientes", null);
+        Cursor fila = BaseDeDatos.rawQuery("SELECT nombre_cliente FROM pagos WHERE pagado = 0", null);
         ArrayList<String> nombres = new ArrayList<>();
 
         if (fila != null && fila.moveToFirst()) {
             do {
-                String nombre = fila.getString(fila.getColumnIndex("nombre"));
+                String nombre = fila.getString(fila.getColumnIndex("nombre_cliente"));
                 nombres.add(nombre);
             } while (fila.moveToNext());
 
@@ -77,30 +79,26 @@ public class pagosFragment extends Fragment {
     public String ObtenerSaldo() {
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(requireContext(), "administracion", null, 1);
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
-        float valorSaldo = 0.0f; // Inicializar el saldo en 0
+        String balance = "";
 
-        Cursor cursor = BaseDeDatos.rawQuery("SELECT cuota FROM clientes WHERE pago=1", null);
+        Calendar calendar = Calendar.getInstance();
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+
+        Cursor cursor = BaseDeDatos.rawQuery("SELECT balance FROM balance_mensual WHERE mes = month AND anio = year", null);
 
         if (cursor != null && cursor.moveToFirst()) {
-            do {
-                // Obtener la cuota como un String desde la base de datos
-                String cuotaString = cursor.getString(cursor.getColumnIndex("cuota"));
-
-                // Convertir el valor de la cuota a un número flotante
-                float cuota = Float.parseFloat(cuotaString);
-
-                // Sumar la cuota al saldo
-                valorSaldo += cuota;
-            } while (cursor.moveToNext());
+            // Obtener la cuota como un String desde la base de datos
+            balance = cursor.getString(cursor.getColumnIndex("balance"));
 
             cursor.close();
         }
 
         BaseDeDatos.close(); // Cerrar la base de datos
-        return String.valueOf(valorSaldo);
+        return balance;
     }
 
-    public void ReinicioPago() {
+    /*public void ReinicioPago() {
         Calendar calendar = Calendar.getInstance();
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
@@ -113,6 +111,6 @@ public class pagosFragment extends Fragment {
 
             BaseDeDatos.update("clientes", valores, null, null);
         }
-    }
+    }*/
 
 }
