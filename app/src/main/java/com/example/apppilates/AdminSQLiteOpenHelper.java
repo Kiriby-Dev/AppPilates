@@ -12,7 +12,10 @@ public class AdminSQLiteOpenHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase BaseDeDatos) {
-        BaseDeDatos.execSQL("create table clientes(nombre text primary key, mutualista text, telefono text, cuota real, patologias text, pago INTEGER DEFAULT 0)");
+        BaseDeDatos.execSQL("create table clientes(nombre text primary key, mutualista text, telefono text, cuota real, patologias text)");
+        BaseDeDatos.execSQL("create table pagos(id text primary key, nombre text, fecha date, pagado boolean, FOREIGN KEY(nombre) REFERENCES clientes(nombre))");
+        BaseDeDatos.execSQL("create table balance_mensual(men int, anio int, balance real, total real, primary key (mes, anio))");
+        BaseDeDatos.execSQL("create table ejercicios(nombre text, descripcion text)");
     }
 
     @Override
