@@ -2,6 +2,8 @@ package com.example.apppilates;
 
 import static androidx.core.content.ContentProviderCompat.requireContext;
 
+import static java.lang.Float.parseFloat;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -18,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.apppilates.Logica.Cliente;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class ClienteAdapter extends RecyclerView.Adapter<ClienteAdapter.ViewHolder> {
@@ -102,13 +105,45 @@ public class ClienteAdapter extends RecyclerView.Adapter<ClienteAdapter.ViewHold
     private void actualizarEstadoCheckBox(String nombreCliente, boolean isChecked) {
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(context, "administracion", null, 1);
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
+
+        float cuota = 0.0f;
+
         ContentValues valores = new ContentValues();
-        valores.put("pagado", isChecked ? true : false);
+        ContentValues valores_mensual = new ContentValues();
 
-        String whereClause = "nombre_cliente=?";
-        String[] whereArgs = {nombreCliente};
+        Calendar calendar = Calendar.getInstance();
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int year = calendar.get(Calendar.YEAR);
 
-        BaseDeDatos.update("pagos", valores, whereClause, whereArgs);
+        if(isChecked) {
+            valores.put("pagado", 1);
+            valores.put("nombre_cliente", nombreCliente);
+            valores.put("mes", month);
+            valores.put("anio", year);
+        }
+
+        BaseDeDatos.update("pagos", valores, "nombre_cliente='" + nombreCliente + "'AND mes='" + month + "'AND anio='" + year +"'", null);
+
+        Cursor cursor = BaseDeDatos.rawQuery("SELECT cuota FROM clientes WHERE nombre = '" + nombreCliente + "'", null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            // Obtener la cuota como un String desde la base de datos
+            cuota = cursor.getFloat(cursor.getColumnIndex("cuota"));
+            cursor.close();
+        }
+
+        Cursor cursor1 = BaseDeDatos.rawQuery("SELECT * FROM balance_mensual WHERE mes = '" + month + "' AND anio = '" + year + "'", null);
+
+        if (cursor1 != null && cursor1.moveToFirst()) {
+            valores_mensual.put("mes", month);
+            valores_mensual.put("anio", year);
+            valores_mensual.put("balance", cursor1.getFloat(cursor1.getColumnIndex("balance")) + cuota);
+            valores_mensual.put("total", cursor1.getFloat(cursor1.getColumnIndex("total")));
+            cursor1.close();
+        }
+
+        BaseDeDatos.update("balance_mensual", valores_mensual, "mes='" + month + "'AND anio='" + year +"'", null);
+
         BaseDeDatos.close();
     }
 }

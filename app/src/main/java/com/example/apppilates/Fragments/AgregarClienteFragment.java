@@ -19,6 +19,8 @@ import com.example.apppilates.Logica.Fabrica;
 import com.example.apppilates.Logica.Interfaces.IControladorClientes;
 import com.example.apppilates.R;
 
+import java.util.Calendar;
+
 public class AgregarClienteFragment extends Fragment {
 
     private IControladorClientes icc;
@@ -75,6 +77,20 @@ public class AgregarClienteFragment extends Fragment {
             registro.put("patologias", patologias_string);
 
             BaseDeDatos.insert("clientes", null, registro);
+
+            Calendar calendar = Calendar.getInstance();
+            int month = calendar.get(Calendar.MONTH) + 1;
+            int year = calendar.get(Calendar.YEAR);
+
+            ContentValues pagos = new ContentValues();
+
+            pagos.put("nombre_cliente", nombre_string);
+            pagos.put("mes", month);
+            pagos.put("anio", year);
+            pagos.put("fecha", "");
+            pagos.put("pagado", 0);
+
+            BaseDeDatos.insert("pagos", null, pagos);
 
             BaseDeDatos.close();
             nombre.setText("");
