@@ -49,22 +49,29 @@ public class ClienteAdapter extends RecyclerView.Adapter<ClienteAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ClienteAdapter.ViewHolder holder, int position) {
-        holder.nombre.setText(arrayList.get(position));
-        boolean isChecked = obtenerEstadoCheckBox(arrayList.get(position));
-        holder.checkBox.setChecked(isChecked);
+        if (!arrayList.isEmpty() && position < arrayList.size()) {
+            String clienteNombre = arrayList.get(position);
 
-        holder.checkBox.setOnCheckedChangeListener((buttonView, isCheckedNew) -> {
-            // Actualizar el estado del CheckBox en la base de datos
-            actualizarEstadoCheckBox(arrayList.get(position), isCheckedNew);
+            holder.nombre.setText(clienteNombre);
+            boolean isChecked = obtenerEstadoCheckBox(clienteNombre);
+            holder.checkBox.setChecked(isChecked);
 
-            listener.onItemCheckedChanged(arrayList.get(position), isCheckedNew);
+            holder.checkBox.setOnCheckedChangeListener((buttonView, isCheckedNew) -> {
+                // Actualizar el estado del CheckBox en la base de datos
+                actualizarEstadoCheckBox(clienteNombre, isCheckedNew);
 
-            if (isCheckedNew) {
-                arrayList.remove(position);
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, getItemCount());
-            }
-        });
+                listener.onItemCheckedChanged(clienteNombre, isCheckedNew);
+
+                if (isCheckedNew) {
+                    // Eliminar el elemento de la lista
+                    int adapterPosition = holder.getAdapterPosition();
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        arrayList.remove(adapterPosition);
+                        notifyItemRemoved(adapterPosition);
+                    }
+                }
+            });
+        }
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.example.apppilates.Fragments;
 import static java.lang.Float.parseFloat;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -14,10 +15,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.apppilates.AdminSQLiteOpenHelper;
 import com.example.apppilates.ClienteAdapter;
+import com.example.apppilates.HistorialPagosActivity;
 import com.example.apppilates.R;
 
 import java.util.ArrayList;
@@ -27,6 +30,7 @@ public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedC
 
     RecyclerView lista;
     TextView saldo;
+    Button boton;
 
     public pagosFragment() {
         // Required empty public constructor
@@ -38,12 +42,28 @@ public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedC
         View view = inflater.inflate(R.layout.fragment_pagos, container, false);
         lista = view.findViewById(R.id.listaPagos);
         saldo = view.findViewById(R.id.saldoTextView);
+        boton = view.findViewById(R.id.historialPagosButton);
+
+        CrearBalanceMensual();
+        saldo.setText("$" + ObtenerSaldo() + "/" + ObtenerTotal());
 
         ArrayList<String> nombres = obtenerListaClientes();
-        CrearBalanceMensual();
-
-        lista.setLayoutManager(new LinearLayoutManager(getContext()));
-        lista.setAdapter(new ClienteAdapter(getContext(), nombres, this));
+        if(nombres.isEmpty()){
+            lista.setVisibility(View.GONE);
+            lista.invalidate();
+        } else {
+            lista.setVisibility(View.VISIBLE);
+            lista.setLayoutManager(new LinearLayoutManager(getContext()));
+            lista.setAdapter(new ClienteAdapter(getContext(), nombres, this));
+        }
+        boton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Lógica para cambiar a la actividad deseada
+                Intent intent = new Intent(getActivity(), HistorialPagosActivity.class);
+                startActivity(intent);
+            }
+        });
 
         //ReinicioPago();
 
@@ -52,7 +72,7 @@ public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedC
 
     public void onItemCheckedChanged(String nombreCliente, boolean isChecked) {
         // Actualizar el TextView del saldo cada vez que se marca un CheckBox
-        saldo.setText("$" + ObtenerSaldo());
+        saldo.setText("$" + ObtenerSaldo() + "/" + ObtenerTotal());
     }
 
     public void CrearBalanceMensual(){
@@ -63,7 +83,9 @@ public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedC
         int month = calendar.get(Calendar.MONTH) + 1;
         int year = calendar.get(Calendar.YEAR);
 
-        if (BaseDeDatos.rawQuery("SELECT * FROM balance_mensual WHERE mes = " + month + " AND anio = " + year, null) == null){
+        Cursor cursor = BaseDeDatos.rawQuery("SELECT * FROM balance_mensual WHERE mes = '" + month + "' AND anio = '" + year + "'", null);
+
+        if (cursor != null && cursor.getCount() == 0){
             ContentValues registro = new ContentValues();
 
             registro.put("mes", month);
@@ -72,6 +94,7 @@ public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedC
             registro.put("total", ObtenerTotal());
 
             BaseDeDatos.insert("balance_mensual", null, registro);
+            cursor.close();
         }
         BaseDeDatos.close();
     }
