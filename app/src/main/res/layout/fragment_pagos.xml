@@ -45,6 +45,34 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:spanCount="1" />
 
+            <TextView
+                android:id="@+id/pagosAtrasadosTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="32dp"
+                android:gravity="center"
+                android:text="Pagos Atrasados"
+                android:textColor="#5D3587"
+                android:textSize="32dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listaPagosAtrasados"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="32dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:spanCount="1" />
+
             <Button
                 android:id="@+id/historialPagosButton"
                 android:layout_width="match_parent"
