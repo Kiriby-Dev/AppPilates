@@ -41,16 +41,10 @@ public class HistorialPagosActivity extends AppCompatActivity {
 
         try {
             if (fila != null && fila.moveToFirst()) {
-                /*String[] meses = {
-                        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-                        "Julio", "Agosto", "Setiembre", "Octubre", "Noviembre", "Diciembre"
-                };*/
                 do {
                     String nombre = fila.getString(fila.getColumnIndex("nombre_cliente"));
-                    //String mes = meses[fila.getInt(fila.getColumnIndex("mes"))];
-                    String mes = fila.getString(fila.getColumnIndex("mes"));
-                    String anio = fila.getString(fila.getColumnIndex("anio"));
-                    nombres.add(nombre + " - " + mes + "/" + anio);
+                    String fecha = fila.getString(fila.getColumnIndex("fecha"));
+                    nombres.add(nombre + " - " + fecha);
                 } while (fila.moveToNext());
             }
         } finally {
