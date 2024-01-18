@@ -56,6 +56,8 @@ public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedC
             lista.setLayoutManager(new LinearLayoutManager(getContext()));
             lista.setAdapter(new ClienteAdapter(getContext(), nombres, this));
         //}
+
+        ArrayList<String> nombresAtrasados = obtenerListaClientesAtrasados();
         boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,8 +66,6 @@ public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedC
                 startActivity(intent);
             }
         });
-
-        //ReinicioPago();
 
         return view;
     }
@@ -119,21 +119,22 @@ public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedC
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(requireContext(), "administracion", null, 1);
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
 
-        Cursor fila = BaseDeDatos.rawQuery("SELECT * FROM pagos WHERE pagado = 0", null);
+        Calendar calendar = Calendar.getInstance();
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int year = calendar.get(Calendar.YEAR);
+        Cursor fila = BaseDeDatos.rawQuery("SELECT * FROM pagos WHERE pagado = 0 AND mes = " + month + " AND anio = " + year, null);
         ArrayList<String> nombres = new ArrayList<>();
 
         try {
             if (fila != null && fila.moveToFirst()) {
-                /*String[] meses = {
-                        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-                        "Julio", "Agosto", "Setiembre", "Octubre", "Noviembre", "Diciembre"
-                };*/
                 do {
                     String nombre = fila.getString(fila.getColumnIndex("nombre_cliente"));
-                    //String mes = meses[fila.getInt(fila.getColumnIndex("mes"))];
-                    String mes = fila.getString(fila.getColumnIndex("mes"));
-                    String anio = fila.getString(fila.getColumnIndex("anio"));
-                    nombres.add(nombre + " - " + mes + "/" + anio);
+                    Cursor datosCliente = BaseDeDatos.rawQuery("SELECT cuota FROM clientes WHERE nombre = '" + nombre + "'", null);
+                    if (datosCliente != null && datosCliente.moveToFirst()) {
+                        String cuota = datosCliente.getString(datosCliente.getColumnIndex("cuota"));
+                        nombres.add(nombre + " - $" + cuota + " - " + month + "/" + year);
+                    }
+                    datosCliente.close();
                 } while (fila.moveToNext());
             }
         } finally {
@@ -142,7 +143,38 @@ public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedC
             }
             BaseDeDatos.close(); // Cerrar la base de datos
         }
+        return nombres;
+    }
 
+    public ArrayList<String> obtenerListaClientesAtrasados() {
+        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(requireContext(), "administracion", null, 1);
+        SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
+
+        Calendar calendar = Calendar.getInstance();
+        int month = calendar.get(Calendar.MONTH) + 1;
+        Cursor fila = BaseDeDatos.rawQuery("SELECT * FROM pagos WHERE pagado = 0 AND mes != " + month, null);
+        ArrayList<String> nombres = new ArrayList<>();
+
+        try {
+            if (fila != null && fila.moveToFirst()) {
+                do {
+                    String nombre = fila.getString(fila.getColumnIndex("nombre_cliente"));
+                    String mes = fila.getString(fila.getColumnIndex("mes"));
+                    String anio = fila.getString(fila.getColumnIndex("anio"));
+                    Cursor datosCliente = BaseDeDatos.rawQuery("SELECT cuota FROM clientes WHERE nombre = '" + nombre + "'", null);
+                    if (datosCliente != null && datosCliente.moveToFirst()) {
+                        String cuota = datosCliente.getString(datosCliente.getColumnIndex("cuota"));
+                        nombres.add(nombre + " - $" + cuota + " (" + mes + "/" + anio + ")");
+                    }
+                    datosCliente.close();
+                } while (fila.moveToNext());
+            }
+        } finally {
+            if (fila != null) {
+                fila.close();
+            }
+            BaseDeDatos.close(); // Cerrar la base de datos
+        }
         return nombres;
     }
 

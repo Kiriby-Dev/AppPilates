@@ -120,8 +120,11 @@ public class ClienteAdapter extends RecyclerView.Adapter<ClienteAdapter.ViewHold
 
         String[] partes = datos.split(" - ");
         String nombreCliente = partes[0];
-        int month = Integer.parseInt(partes[1].split("/")[0]);
-        int year = Integer.parseInt(partes[1].split("/")[1]);
+        String[] fecha = partes[2].split("/");
+
+
+        int month = Integer.parseInt(fecha[0]);
+        int year = Integer.parseInt(fecha[1]);
         Calendar calendar = Calendar.getInstance();
         int diaPago = calendar.get(Calendar.DAY_OF_MONTH);
         int mesPago = calendar.get(Calendar.MONTH) + 1;
