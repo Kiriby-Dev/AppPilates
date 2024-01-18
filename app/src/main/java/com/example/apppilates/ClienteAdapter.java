@@ -122,12 +122,17 @@ public class ClienteAdapter extends RecyclerView.Adapter<ClienteAdapter.ViewHold
         String nombreCliente = partes[0];
         int month = Integer.parseInt(partes[1].split("/")[0]);
         int year = Integer.parseInt(partes[1].split("/")[1]);
+        Calendar calendar = Calendar.getInstance();
+        int diaPago = calendar.get(Calendar.DAY_OF_MONTH);
+        int mesPago = calendar.get(Calendar.MONTH) + 1;
+        int anioPago = calendar.get(Calendar.YEAR);
 
         if(isChecked) {
             valores.put("pagado", 1);
             valores.put("nombre_cliente", nombreCliente);
             valores.put("mes", month);
             valores.put("anio", year);
+            valores.put("fecha", diaPago + "/" + mesPago + "/" + anioPago);
         }
 
         BaseDeDatos.update("pagos", valores, "nombre_cliente='" + nombreCliente + "'AND mes='" + month + "'AND anio='" + year +"'", null);
