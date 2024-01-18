@@ -80,7 +80,7 @@ public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedC
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
 
         Calendar calendar = Calendar.getInstance();
-        int month = calendar.get(Calendar.MONTH);
+        int month = calendar.get(Calendar.MONTH) + 1;
         int year = calendar.get(Calendar.YEAR);
 
         Cursor cursor = BaseDeDatos.rawQuery("SELECT * FROM balance_mensual WHERE mes = '" + month + "' AND anio = '" + year + "'", null);
@@ -119,14 +119,21 @@ public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedC
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(requireContext(), "administracion", null, 1);
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
 
-        Cursor fila = BaseDeDatos.rawQuery("SELECT nombre_cliente FROM pagos WHERE pagado = 0", null);
+        Cursor fila = BaseDeDatos.rawQuery("SELECT * FROM pagos WHERE pagado = 0", null);
         ArrayList<String> nombres = new ArrayList<>();
 
         try {
             if (fila != null && fila.moveToFirst()) {
+                /*String[] meses = {
+                        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                        "Julio", "Agosto", "Setiembre", "Octubre", "Noviembre", "Diciembre"
+                };*/
                 do {
                     String nombre = fila.getString(fila.getColumnIndex("nombre_cliente"));
-                    nombres.add(nombre);
+                    //String mes = meses[fila.getInt(fila.getColumnIndex("mes"))];
+                    String mes = fila.getString(fila.getColumnIndex("mes"));
+                    String anio = fila.getString(fila.getColumnIndex("anio"));
+                    nombres.add(nombre + " - " + mes + "/" + anio);
                 } while (fila.moveToNext());
             }
         } finally {
@@ -145,7 +152,7 @@ public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedC
         Float balance = 0.0f;
 
         Calendar calendar = Calendar.getInstance();
-        int month = calendar.get(Calendar.MONTH);
+        int month = calendar.get(Calendar.MONTH) + 1;
         int year = calendar.get(Calendar.YEAR);
 
         Cursor cursor = BaseDeDatos.rawQuery("SELECT balance FROM balance_mensual WHERE mes = " + month + " AND anio = " + year, null);

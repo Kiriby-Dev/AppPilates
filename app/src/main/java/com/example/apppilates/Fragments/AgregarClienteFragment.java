@@ -80,7 +80,7 @@ public class AgregarClienteFragment extends Fragment {
             BaseDeDatos.insert("clientes", null, registro);
 
             Calendar calendar = Calendar.getInstance();
-            int month = calendar.get(Calendar.MONTH);
+            int month = calendar.get(Calendar.MONTH) + 1;
             int year = calendar.get(Calendar.YEAR);
 
             ContentValues pagos = new ContentValues();

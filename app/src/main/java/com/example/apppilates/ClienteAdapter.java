@@ -109,7 +109,7 @@ public class ClienteAdapter extends RecyclerView.Adapter<ClienteAdapter.ViewHold
         return isChecked;
     }
 
-    private void actualizarEstadoCheckBox(String nombreCliente, boolean isChecked) {
+    private void actualizarEstadoCheckBox(String datos, boolean isChecked) {
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(context, "administracion", null, 1);
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
 
@@ -118,9 +118,10 @@ public class ClienteAdapter extends RecyclerView.Adapter<ClienteAdapter.ViewHold
         ContentValues valores = new ContentValues();
         ContentValues valores_mensual = new ContentValues();
 
-        Calendar calendar = Calendar.getInstance();
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
+        String[] partes = datos.split(" - ");
+        String nombreCliente = partes[0];
+        int month = Integer.parseInt(partes[1].split("/")[0]);
+        int year = Integer.parseInt(partes[1].split("/")[1]);
 
         if(isChecked) {
             valores.put("pagado", 1);
