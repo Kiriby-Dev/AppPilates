@@ -132,13 +132,13 @@
                     android:ems="10"
                     android:gravity="start|top"
                     android:hint="Ingrese Patologias"
-                    android:overScrollMode="always"
-                    android:scrollbars="vertical"
-                    android:scrollbarStyle="insideInset"
-                    android:scrollHorizontally="false"
                     android:inputType="textMultiLine"
                     android:lines="7"
-                    android:padding="9dp"/>
+                    android:overScrollMode="always"
+                    android:padding="9dp"
+                    android:scrollbarStyle="insideInset"
+                    android:scrollbars="vertical"
+                    android:scrollHorizontally="false" />
 
                 <Button
                     android:id="@+id/registrarButton"
