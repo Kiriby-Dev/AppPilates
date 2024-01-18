@@ -164,7 +164,7 @@ public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedC
                     Cursor datosCliente = BaseDeDatos.rawQuery("SELECT cuota FROM clientes WHERE nombre = '" + nombre + "'", null);
                     if (datosCliente != null && datosCliente.moveToFirst()) {
                         String cuota = datosCliente.getString(datosCliente.getColumnIndex("cuota"));
-                        nombres.add(nombre + " - $" + cuota + " (" + mes + "/" + anio + ")");
+                        nombres.add(nombre + " - $" + cuota + " - " + mes + "/" + anio);
                     }
                     datosCliente.close();
                 } while (fila.moveToNext());
