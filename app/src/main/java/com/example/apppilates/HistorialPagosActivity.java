@@ -44,7 +44,12 @@ public class HistorialPagosActivity extends AppCompatActivity {
                 do {
                     String nombre = fila.getString(fila.getColumnIndex("nombre_cliente"));
                     String fecha = fila.getString(fila.getColumnIndex("fecha"));
-                    nombres.add(nombre + " - " + fecha);
+                    Cursor datosCliente = BaseDeDatos.rawQuery("SELECT cuota FROM clientes WHERE nombre = '" + nombre + "'", null);
+                    if (datosCliente != null && datosCliente.moveToFirst()) {
+                        String cuota = datosCliente.getString(datosCliente.getColumnIndex("cuota"));
+                        nombres.add(nombre + " - $" + cuota + " - " + fecha);
+                    }
+                    datosCliente.close();
                 } while (fila.moveToNext());
             }
         } finally {
