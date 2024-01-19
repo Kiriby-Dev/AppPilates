@@ -1,4 +1,4 @@
-package com.example.apppilates;
+package com.example.apppilates.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,6 +9,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
+import com.example.apppilates.AdminSQLiteOpenHelper;
+import com.example.apppilates.Adapters.HistorialAdapter;
+import com.example.apppilates.R;
 
 import java.util.ArrayList;
 

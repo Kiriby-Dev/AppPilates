@@ -1,7 +1,5 @@
 package com.example.apppilates.Fragments;
 
-import static java.lang.Float.parseFloat;
-
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -19,8 +17,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.apppilates.AdminSQLiteOpenHelper;
-import com.example.apppilates.ClienteAdapter;
-import com.example.apppilates.HistorialPagosActivity;
+import com.example.apppilates.Adapters.ClienteAdapter;
+import com.example.apppilates.Activities.HistorialPagosActivity;
 import com.example.apppilates.R;
 
 import java.util.ArrayList;

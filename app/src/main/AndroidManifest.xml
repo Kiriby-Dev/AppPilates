@@ -14,7 +14,7 @@
         android:theme="@style/Theme.AppPilates"
         tools:targetApi="31">
         <activity
-            android:name=".HistorialPagosActivity"
+            android:name=".Activities.HistorialPagosActivity"
             android:exported="false" />
         <activity
             android:name=".LandingPage"

@@ -1,8 +1,4 @@
-package com.example.apppilates;
-
-import static androidx.core.content.ContentProviderCompat.requireContext;
-
-import static java.lang.Float.parseFloat;
+package com.example.apppilates.Adapters;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -17,11 +13,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.apppilates.Logica.Cliente;
+import com.example.apppilates.AdminSQLiteOpenHelper;
+import com.example.apppilates.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 public class ClienteAdapter extends RecyclerView.Adapter<ClienteAdapter.ViewHolder> {
 
