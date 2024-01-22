@@ -17,7 +17,6 @@ public class AdminSQLiteOpenHelper extends SQLiteOpenHelper{
         BaseDeDatos.execSQL("create table ejercicios(nombre text primary key, descripcion text)");
         BaseDeDatos.execSQL("create table pagos(nombre_cliente text, mes int, anio int, fecha text, pagado INTEGER DEFAULT 0, primary key(nombre_cliente, mes, anio))");
         BaseDeDatos.execSQL("create table recibos_pagos(nombre_cliente text, mes int, anio int, recibo text, primary key(nombre_cliente, mes, anio))");
-        BaseDeDatos.execSQL("create table hace(nombre_cliente text, ejercicio text, primary key(nombre_cliente, ejercicio))");
         BaseDeDatos.execSQL("create table no_puede(nombre_cliente text, ejercicio text, primary key(nombre_cliente, ejercicio))");
 
 
