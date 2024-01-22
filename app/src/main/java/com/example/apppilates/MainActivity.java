@@ -9,7 +9,7 @@ import android.os.Bundle;
 
 import com.example.apppilates.Fragments.AgregarClienteFragment;
 import com.example.apppilates.Fragments.AgregarEjercicioFragment;
-import com.example.apppilates.Fragments.BuscarClienteFragment;
+import com.example.apppilates.Fragments.BuscarFragment;
 import com.example.apppilates.Fragments.pagosFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (item.getItemId() == R.id.agregar) {
                 replaceFragment(new AgregarClienteFragment());
             } else if (item.getItemId() == R.id.buscar) {
-                replaceFragment(new BuscarClienteFragment());
+                replaceFragment(new BuscarFragment());
             }
             return true;
         });

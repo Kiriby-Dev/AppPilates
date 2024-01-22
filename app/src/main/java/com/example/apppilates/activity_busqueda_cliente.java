@@ -1,30 +1,19 @@
-package com.example.apppilates.Fragments;
+package com.example.apppilates;
 
-import android.annotation.SuppressLint;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.apppilates.AdminSQLiteOpenHelper;
-import com.example.apppilates.Logica.DTCliente;
-import com.example.apppilates.Logica.Fabrica;
-import com.example.apppilates.Logica.Interfaces.IControladorClientes;
-import com.example.apppilates.R;
-
-public class BuscarClienteFragment extends Fragment {
+public class activity_busqueda_cliente extends AppCompatActivity {
 
     private EditText nombre;
     private EditText mutualista;
@@ -34,50 +23,48 @@ public class BuscarClienteFragment extends Fragment {
     private Spinner lista;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_buscar_cliente, container, false);
-        nombre = view.findViewById(R.id.nombreEditTextBuscar);
-        mutualista = view.findViewById(R.id.mutualistaEditTextBuscar);
-        telefono = view.findViewById(R.id.telefonoEditTextBuscar);
-        cuota = view.findViewById(R.id.cuotaEditTextBuscar);
-        patologias = view.findViewById(R.id.patologiasEditTextBuscar);
-        lista = view.findViewById(R.id.listaClientesBuscar);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_busqueda_cliente);
 
-        String[] opciones = obtenerListaClientes(view);
+        nombre = findViewById(R.id.nombreEditTextBuscar);
+        mutualista = findViewById(R.id.mutualistaEditTextBuscar);
+        telefono = findViewById(R.id.telefonoEditTextBuscar);
+        cuota = findViewById(R.id.cuotaEditTextBuscar);
+        patologias = findViewById(R.id.patologiasEditTextBuscar);
+        lista = findViewById(R.id.listaClientesBuscar);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.style_spinner, opciones);
+        String[] opciones = obtenerListaClientes();
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.style_spinner, opciones);
         lista.setAdapter(adapter);
 
-        Button buscarButton = view.findViewById(R.id.registrarButton);
+        Button buscarButton = findViewById(R.id.registrarButton);
         buscarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                buscarCliente(v);
+                buscarCliente();
             }
         });
 
-        Button eliminarButton = view.findViewById(R.id.eliminarButton);
+        Button eliminarButton = findViewById(R.id.eliminarButton);
         eliminarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                eliminarCliente(v);
+                eliminarCliente();
             }
         });
 
-        Button modificarButton = view.findViewById(R.id.editarButton);
+        Button modificarButton = findViewById(R.id.editarButton);
         modificarButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { modificarCliente(v);
+            public void onClick(View v) { modificarCliente();
             }
         });
-
-        return view;
     }
 
-    public void buscarCliente(View view){
-        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(requireContext(), "administracion", null, 1);
+    public void buscarCliente(){
+        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this, "administracion", null, 1);
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
 
         String seleccion = lista.getSelectedItem().toString();
@@ -94,8 +81,8 @@ public class BuscarClienteFragment extends Fragment {
         BaseDeDatos.close();
     }
 
-    public String[] obtenerListaClientes(View view) {
-        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(requireContext(), "administracion", null, 1);
+    public String[] obtenerListaClientes() {
+        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this, "administracion", null, 1);
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
 
         Cursor fila = BaseDeDatos.rawQuery("SELECT nombre FROM clientes", null);
@@ -121,8 +108,8 @@ public class BuscarClienteFragment extends Fragment {
         return nombres;
     }
 
-    public void eliminarCliente(View view) {
-        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(requireContext(), "administracion", null, 1);
+    public void eliminarCliente(){
+        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this, "administracion", null, 1);
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
 
         String seleccion = lista.getSelectedItem().toString();
@@ -135,14 +122,14 @@ public class BuscarClienteFragment extends Fragment {
             cuota.setText("");
             patologias.setText("");
 
-            Toast.makeText(requireContext(), "Cliente eliminado con éxito", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Cliente eliminado con éxito", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(requireContext(), "Debe seleccionar un cliente", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Debe seleccionar un cliente", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void modificarCliente(View view){
-        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(requireContext(), "administracion", null, 1);
+    public void modificarCliente(){
+        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this, "administracion", null, 1);
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
 
         String nombre_string = nombre.getText().toString();
@@ -165,12 +152,12 @@ public class BuscarClienteFragment extends Fragment {
                 int cantidad = BaseDeDatos.update("clientes", registro, "nombre='" + seleccion + "'", null);
 
                 BaseDeDatos.close();
-                Toast.makeText(requireContext(), "Cambios guardados", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Cambios guardados", Toast.LENGTH_SHORT).show();
             }else{
-                Toast.makeText(requireContext(), "Debes llenar todos los campos", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Debes llenar todos los campos", Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(requireContext(), "Debe seleccionar un cliente", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Debe seleccionar un cliente", Toast.LENGTH_SHORT).show();
         }
     }
 }
