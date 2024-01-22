@@ -34,7 +34,6 @@ public class AgregarEjercicioFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_agregar_ejercicio, container, false);
 
         nombre = view.findViewById(R.id.nombreEditText);
-        descripcion = view.findViewById(R.id.descripcionEditText);
 
         Button crearButton = view.findViewById(R.id.crearButton);
         crearButton.setOnClickListener(new View.OnClickListener() {

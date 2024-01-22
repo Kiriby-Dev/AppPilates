@@ -50,33 +50,6 @@
                     android:inputType="text"
                     android:padding="9dp" />
 
-                <TextView
-                    android:id="@+id/descripcionTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    android:text="Descripcion"
-                    android:textColor="#5D3587"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/descripcionEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/edittext_background"
-                    android:ems="10"
-                    android:gravity="start|top"
-                    android:hint="Ingrese Descripcion"
-                    android:inputType="textMultiLine"
-                    android:lines="7"
-                    android:overScrollMode="always"
-                    android:padding="9dp"
-                    android:scrollbarStyle="insideInset"
-                    android:scrollbars="vertical"
-                    android:scrollHorizontally="false" />
-
                 <Button
                     android:id="@+id/crearButton"
                     style="android:style/Widget.Button"
