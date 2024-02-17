@@ -47,15 +47,15 @@ public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedC
         CrearBalanceMensual();
         saldo.setText("$" + ObtenerSaldo() + "/" + ObtenerTotal());
 
-        ArrayList<String> nombres = obtenerListaClientes();
+        ArrayList<String> nombres = obtenerListaClientes();/*
         if(nombres.isEmpty()){
             lista.setVisibility(View.GONE);
             lista.invalidate();
-        } else {
+        } else { */
             lista.setVisibility(View.VISIBLE);
             lista.setLayoutManager(new LinearLayoutManager(getContext()));
             lista.setAdapter(new ClienteAdapter(getContext(), nombres, this));
-        }
+        //}
         boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,7 +80,7 @@ public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedC
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
 
         Calendar calendar = Calendar.getInstance();
-        int month = calendar.get(Calendar.MONTH) + 1;
+        int month = calendar.get(Calendar.MONTH);
         int year = calendar.get(Calendar.YEAR);
 
         Cursor cursor = BaseDeDatos.rawQuery("SELECT * FROM balance_mensual WHERE mes = '" + month + "' AND anio = '" + year + "'", null);
@@ -94,6 +94,22 @@ public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedC
             registro.put("total", ObtenerTotal());
 
             BaseDeDatos.insert("balance_mensual", null, registro);
+
+            Cursor cursorClientes = BaseDeDatos.rawQuery("SELECT nombre FROM clientes", null);
+            if (cursorClientes != null && cursorClientes.moveToFirst()) {
+                do {
+                    ContentValues pagos = new ContentValues();
+                    String nombre = cursorClientes.getString(cursorClientes.getColumnIndex("nombre"));
+
+                    pagos.put("nombre_cliente", nombre);
+                    pagos.put("mes", month);
+                    pagos.put("anio", year);
+                    pagos.put("fecha", "");
+
+                    BaseDeDatos.insert("pagos", null, pagos);
+                } while (cursorClientes.moveToNext());
+                cursorClientes.close();
+            }
             cursor.close();
         }
         BaseDeDatos.close();
@@ -112,9 +128,6 @@ public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedC
                     String nombre = fila.getString(fila.getColumnIndex("nombre_cliente"));
                     nombres.add(nombre);
                 } while (fila.moveToNext());
-            } else {
-                // No se encontraron datos, agregar cadena vacía si se necesita
-                nombres.add("");
             }
         } finally {
             if (fila != null) {
@@ -129,26 +142,26 @@ public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedC
     public String ObtenerSaldo() {
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(requireContext(), "administracion", null, 1);
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
-        String balance = "";
+        Float balance = 0.0f;
 
         Calendar calendar = Calendar.getInstance();
-        int month = calendar.get(Calendar.MONTH) + 1;
+        int month = calendar.get(Calendar.MONTH);
         int year = calendar.get(Calendar.YEAR);
 
         Cursor cursor = BaseDeDatos.rawQuery("SELECT balance FROM balance_mensual WHERE mes = " + month + " AND anio = " + year, null);
 
         if (cursor != null && cursor.moveToFirst()) {
             // Obtener la cuota como un String desde la base de datos
-            balance = cursor.getString(cursor.getColumnIndex("balance"));
+            balance = cursor.getFloat(cursor.getColumnIndex("balance"));
 
             cursor.close();
         }
 
         BaseDeDatos.close(); // Cerrar la base de datos
-        return balance;
+        return String.valueOf(balance);
     }
 
-    public float ObtenerTotal() {
+    public String ObtenerTotal() {
         AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(requireContext(), "administracion", null, 1);
         SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
         float total = 0.0f;
@@ -157,31 +170,15 @@ public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedC
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
-            // Obtener la cuota como un String desde la base de datos
-            float cuota = cursor.getFloat(cursor.getColumnIndex("cuota"));
-            total += cuota;
+                // Obtener la cuota como un String desde la base de datos
+                float cuota = cursor.getFloat(cursor.getColumnIndex("cuota"));
+                total += cuota;
             } while (cursor.moveToNext());
 
             cursor.close();
         }
 
         BaseDeDatos.close(); // Cerrar la base de datos
-        return total;
+        return String.valueOf(total);
     }
-
-    /*public void ReinicioPago() {
-        Calendar calendar = Calendar.getInstance();
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        if (day == 1) {
-            AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(requireContext(), "administracion", null, 1);
-            SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
-
-            ContentValues valores = new ContentValues();
-            valores.put("pago", 0);
-
-            BaseDeDatos.update("clientes", valores, null, null);
-        }
-    }*/
-
 }

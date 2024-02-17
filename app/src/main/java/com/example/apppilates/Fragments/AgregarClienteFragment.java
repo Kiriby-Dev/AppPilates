@@ -1,6 +1,7 @@
 package com.example.apppilates.Fragments;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
@@ -79,7 +80,7 @@ public class AgregarClienteFragment extends Fragment {
             BaseDeDatos.insert("clientes", null, registro);
 
             Calendar calendar = Calendar.getInstance();
-            int month = calendar.get(Calendar.MONTH) + 1;
+            int month = calendar.get(Calendar.MONTH);
             int year = calendar.get(Calendar.YEAR);
 
             ContentValues pagos = new ContentValues();
@@ -91,6 +92,15 @@ public class AgregarClienteFragment extends Fragment {
             pagos.put("pagado", 0);
 
             BaseDeDatos.insert("pagos", null, pagos);
+
+            Cursor cursorBalance = BaseDeDatos.rawQuery("SELECT * FROM balance_mensual WHERE mes = '" + month + "' AND anio = '" + year + "'", null);
+
+            ContentValues balanceMensual = new ContentValues();
+            if (cursorBalance != null && cursorBalance.moveToFirst()) {
+                balanceMensual.put("total", cursorBalance.getFloat(cursorBalance.getColumnIndex("total")) + Float.valueOf(cuota_string));
+                BaseDeDatos.update("balance_mensual", balanceMensual, "mes = '" + month + "' AND anio = '" + year + "'", null);
+            }
+            cursorBalance.close();
 
             BaseDeDatos.close();
             nombre.setText("");
