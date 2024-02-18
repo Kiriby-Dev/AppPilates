@@ -29,6 +29,8 @@ import java.util.Calendar;
 public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedChangeListener{
 
     RecyclerView lista;
+
+    RecyclerView listaAtrasados;
     TextView saldo;
     Button boton;
 
@@ -41,23 +43,22 @@ public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedC
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pagos, container, false);
         lista = view.findViewById(R.id.listaPagos);
+        listaAtrasados = view.findViewById(R.id.listaPagosAtrasados);
         saldo = view.findViewById(R.id.saldoTextView);
         boton = view.findViewById(R.id.historialPagosButton);
 
         CrearBalanceMensual();
         saldo.setText("$" + ObtenerSaldo() + "/" + ObtenerTotal());
 
-        ArrayList<String> nombres = obtenerListaClientes();/*
-        if(nombres.isEmpty()){
-            lista.setVisibility(View.GONE);
-            lista.invalidate();
-        } else { */
-            lista.setVisibility(View.VISIBLE);
-            lista.setLayoutManager(new LinearLayoutManager(getContext()));
-            lista.setAdapter(new ClienteAdapter(getContext(), nombres, this));
-        //}
+        ArrayList<String> nombres = obtenerListaClientes();
+        lista.setVisibility(View.VISIBLE);
+        lista.setLayoutManager(new LinearLayoutManager(getContext()));
+        lista.setAdapter(new ClienteAdapter(getContext(), nombres, this));
 
         ArrayList<String> nombresAtrasados = obtenerListaClientesAtrasados();
+        listaAtrasados.setVisibility(View.VISIBLE);
+        listaAtrasados.setLayoutManager(new LinearLayoutManager(getContext()));
+        listaAtrasados.setAdapter(new ClienteAdapter(getContext(), nombresAtrasados, this));
         boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
