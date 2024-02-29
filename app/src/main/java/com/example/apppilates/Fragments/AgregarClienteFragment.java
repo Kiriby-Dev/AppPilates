@@ -12,23 +12,32 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.apppilates.AdminSQLiteOpenHelper;
-import com.example.apppilates.Logica.Fabrica;
-import com.example.apppilates.Logica.Interfaces.IControladorClientes;
 import com.example.apppilates.R;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AgregarClienteFragment extends Fragment {
-
-    private IControladorClientes icc;
+    FirebaseFirestore db;
+    private EditText cedula;
     private EditText nombre;
+    private EditText apellido;
     private EditText mutualista;
+    private EditText emergencia;
     private EditText telefono;
+    private EditText domicilio;
+    private EditText mail;
     private EditText cuota;
+    private RadioGroup genero;
     private EditText patologias;
 
     public AgregarClienteFragment() {
@@ -41,11 +50,19 @@ public class AgregarClienteFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_agregar_cliente, container, false);
 
+        cedula = view.findViewById(R.id.cedulaEditText);
         nombre = view.findViewById(R.id.nombreEditText);
+        apellido = view.findViewById(R.id.apellidoEditText);
         mutualista = view.findViewById(R.id.mutualistaEditText);
+        emergencia = view.findViewById(R.id.emergenciaEditText);
         telefono = view.findViewById(R.id.telefonoEditText);
+        domicilio = view.findViewById(R.id.domicilioEditText);
+        mail = view.findViewById(R.id.mailEditText);
         cuota = view.findViewById(R.id.cuotaEditText);
+        genero = view.findViewById(R.id.radioGroup);
         patologias = view.findViewById(R.id.patologiasEditText);
+
+        db = FirebaseFirestore.getInstance();
 
         Button buscarButton = view.findViewById(R.id.registrarButton);
         buscarButton.setOnClickListener(new View.OnClickListener() {
@@ -59,58 +76,76 @@ public class AgregarClienteFragment extends Fragment {
     }
 
     public void ingresarCliente(View view) {
-        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(requireContext(), "administracion", null, 1);
-        SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
 
+        String cedula_string = cedula.getText().toString();
         String nombre_string = nombre.getText().toString();
+        String apellido_string = apellido.getText().toString();
         String mutualista_string = mutualista.getText().toString();
+        String emergencia_string = emergencia.getText().toString();
         String telefono_string = telefono.getText().toString();
+        String domicilio_string = domicilio.getText().toString();
+        String mail_string = mail.getText().toString();
         String cuota_string = cuota.getText().toString();
         String patologias_string = patologias.getText().toString();
 
-        if(!nombre_string.isEmpty() && !mutualista_string.isEmpty() && !telefono_string.isEmpty() && !patologias_string.isEmpty() && !cuota_string.isEmpty() ){
-            ContentValues registro = new ContentValues();
+        int genero_int = genero.getCheckedRadioButtonId();
+        String genero_string = "";
+        if (genero_int == R.id.radioButton1) {
+            genero_string = "Masculino";
+        } else if (genero_int == R.id.radioButton2) {
+            genero_string = "Femenino";
+        } else if (genero_int == R.id.radioButton3) {
+            genero_string = "Otro";
+        }
 
-            registro.put("nombre", nombre_string);
-            registro.put("mutualista", mutualista_string);
-            registro.put("telefono", telefono_string);
-            registro.put("cuota", cuota_string);
-            registro.put("patologias", patologias_string);
-
-            BaseDeDatos.insert("clientes", null, registro);
+        if (!cedula_string.isEmpty() && !nombre_string.isEmpty() && !apellido_string.isEmpty()) {
 
             Calendar calendar = Calendar.getInstance();
             int month = calendar.get(Calendar.MONTH) + 1;
             int year = calendar.get(Calendar.YEAR);
+            String mesString = String.valueOf(month);
+            String anioString = String.valueOf(year);
 
-            ContentValues pagos = new ContentValues();
+            Map<String, Object> user = new HashMap<>();
+            user.put("cedula", cedula_string);
+            user.put("nombre", nombre_string);
+            user.put("apellido", apellido_string);
+            user.put("mutualista", mutualista_string);
+            user.put("emergencia", emergencia_string);
+            user.put("telefono", telefono_string);
+            user.put("domicilio", domicilio_string);
+            user.put("mail", mail_string);
+            user.put("cuota", cuota_string);
+            user.put("genero", genero_string);
+            user.put("patologias", patologias_string);
+            user.put("mesAlta", month);
+            user.put("añoAlta", year);
 
-            pagos.put("nombre_cliente", nombre_string);
-            pagos.put("mes", month);
-            pagos.put("anio", year);
-            pagos.put("fecha", "");
-            pagos.put("pagado", 0);
+            db.collection("clientes").document(cedula_string).set(user);
 
-            BaseDeDatos.insert("pagos", null, pagos);
+            Map<String, Object> pago = new HashMap<>();
+            pago.put("cedula", cedula_string);
+            pago.put("mes", month);
+            pago.put("año", year);
+            pago.put("fecha", "");
+            pago.put("pagado", false);
 
-            Cursor cursorBalance = BaseDeDatos.rawQuery("SELECT * FROM balance_mensual WHERE mes = '" + month + "' AND anio = '" + year + "'", null);
+            String identificadorPago = cedula_string + mesString + anioString ;
+            db.collection("pagos").document(identificadorPago).set(pago);
 
-            ContentValues balanceMensual = new ContentValues();
-            if (cursorBalance != null && cursorBalance.moveToFirst()) {
-                balanceMensual.put("total", cursorBalance.getFloat(cursorBalance.getColumnIndex("total")) + Float.valueOf(cuota_string));
-                BaseDeDatos.update("balance_mensual", balanceMensual, "mes = '" + month + "' AND anio = '" + year + "'", null);
-            }
-            cursorBalance.close();
-
-            BaseDeDatos.close();
+            cedula.setText("");
             nombre.setText("");
+            apellido.setText("");
             mutualista.setText("");
+            emergencia.setText("");
             telefono.setText("");
+            domicilio.setText("");
+            mail.setText("");
             cuota.setText("");
             patologias.setText("");
 
             Toast.makeText(requireContext(), "Cliente registrado con éxito", Toast.LENGTH_SHORT).show();
-        } else{
+        } else {
             Toast.makeText(requireContext(), "Debe llenar todos los campos", Toast.LENGTH_SHORT).show();
         }
     }

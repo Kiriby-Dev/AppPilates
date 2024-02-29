@@ -10,34 +10,56 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class activity_busqueda_cliente extends AppCompatActivity {
 
+    FirebaseFirestore db;
+    private EditText cedula;
     private EditText nombre;
+    private EditText apellido;
     private EditText mutualista;
+    private EditText emergencia;
     private EditText telefono;
+    private EditText domicilio;
+    private EditText mail;
     private EditText cuota;
+    private EditText genero;
     private EditText patologias;
-    private Spinner lista;
+    private EditText lista;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_busqueda_cliente);
 
+        cedula = findViewById(R.id.cedulaEditTextBuscar);
         nombre = findViewById(R.id.nombreEditTextBuscar);
+        apellido = findViewById(R.id.apellidoEditTextBuscar);
         mutualista = findViewById(R.id.mutualistaEditTextBuscar);
+        emergencia = findViewById(R.id.emergenciaEditTextBuscar);
         telefono = findViewById(R.id.telefonoEditTextBuscar);
+        domicilio = findViewById(R.id.domicilioEditTextBuscar);
+        mail = findViewById(R.id.mailEditTextBuscar);
         cuota = findViewById(R.id.cuotaEditTextBuscar);
+        genero = findViewById(R.id.generoEditTextBuscar);
         patologias = findViewById(R.id.patologiasEditTextBuscar);
         lista = findViewById(R.id.listaClientesBuscar);
 
-        String[] opciones = obtenerListaClientes();
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.style_spinner, opciones);
-        lista.setAdapter(adapter);
+        db = FirebaseFirestore.getInstance();
 
         Button buscarButton = findViewById(R.id.registrarButton);
         buscarButton.setOnClickListener(new View.OnClickListener() {
@@ -64,100 +86,79 @@ public class activity_busqueda_cliente extends AppCompatActivity {
     }
 
     public void buscarCliente(){
-        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this, "administracion", null, 1);
-        SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
+        String seleccion = lista.getText().toString();
 
-        String seleccion = lista.getSelectedItem().toString();
-
-        Cursor fila = BaseDeDatos.rawQuery("SELECT nombre, mutualista, telefono, cuota, patologias FROM clientes WHERE nombre = ?", new String[]{seleccion});
-
-        if(fila.moveToFirst()){
-            nombre.setText(fila.getString(0));
-            mutualista.setText(fila.getString(1));
-            telefono.setText(fila.getString(2));
-            cuota.setText(fila.getString(3));
-            patologias.setText(fila.getString(4));
-        }
-        BaseDeDatos.close();
-    }
-
-    public String[] obtenerListaClientes() {
-        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this, "administracion", null, 1);
-        SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
-
-        Cursor fila = BaseDeDatos.rawQuery("SELECT nombre FROM clientes", null);
-        String[] nombres;
-        if (fila != null && fila.moveToFirst()) {
-            nombres = new String[fila.getCount() + 1]; // Agregar espacio para el elemento vacío
-            nombres[0] = ""; // Establecer el primer elemento como cadena vacía
-            int index = 1; // Comenzar desde el segundo elemento
-
-            do {
-                String nombre = fila.getString(fila.getColumnIndex("nombre"));
-                nombres[index++] = nombre;
-            } while (fila.moveToNext());
-
-            fila.close();
-        } else {
-            // No se encontraron datos
-            nombres = new String[]{""}; // Devolver una lista con un elemento vacío
-        }
-
-        BaseDeDatos.close(); // Cerrar la base de datos
-
-        return nombres;
+        db.collection("clientes").document(seleccion).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if(documentSnapshot.exists()) {
+                    cedula.setText(documentSnapshot.getString("cedula"));
+                    nombre.setText(documentSnapshot.getString("nombre"));
+                    apellido.setText(documentSnapshot.getString("apellido"));
+                    mutualista.setText(documentSnapshot.getString("mutualista"));
+                    emergencia.setText(documentSnapshot.getString("emergencia"));
+                    telefono.setText(documentSnapshot.getString("telefono"));
+                    domicilio.setText(documentSnapshot.getString("domicilio"));
+                    mail.setText(documentSnapshot.getString("mail"));
+                    cuota.setText(documentSnapshot.getString("cuota"));
+                    genero.setText(documentSnapshot.getString("genero"));
+                    patologias.setText(documentSnapshot.getString("patologias"));
+                }
+            }
+        });
     }
 
     public void eliminarCliente(){
-        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this, "administracion", null, 1);
-        SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
+        String seleccion = lista.getText().toString();
 
-        String seleccion = lista.getSelectedItem().toString();
         if (!seleccion.isEmpty()) {
-            int cantidad = BaseDeDatos.delete("clientes", "nombre='" + seleccion + "'", null);
-            BaseDeDatos.close();
-            nombre.setText("");
-            mutualista.setText("");
-            telefono.setText("");
-            cuota.setText("");
-            patologias.setText("");
+            db.collection("clientes").document(seleccion).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(getApplicationContext(), "Cliente eliminado con éxito", Toast.LENGTH_SHORT).show();
+                    cedula.setText("");
+                    nombre.setText("");
+                    apellido.setText("");
+                    mutualista.setText("");
+                    emergencia.setText("");
+                    telefono.setText("");
+                    domicilio.setText("");
+                    mail.setText("");
+                    cuota.setText("");
+                    genero.setText("");
+                    patologias.setText("");
+                }
+            });
 
-            Toast.makeText(this, "Cliente eliminado con éxito", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Debe seleccionar un cliente", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void modificarCliente(){
-        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this, "administracion", null, 1);
-        SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
+    public void modificarCliente() {
+        String seleccion = lista.getText().toString();
 
-        String nombre_string = nombre.getText().toString();
-        String mutualista_string = mutualista.getText().toString();
-        String telefono_string = telefono.getText().toString();
-        String cuota_string = cuota.getText().toString();
-        String patologias_string = patologias.getText().toString();
+        Map<String, Object> user = new HashMap<>();
+        user.put("cedula", cedula.getText().toString());
+        user.put("nombre", nombre.getText().toString());
+        user.put("apellido", apellido.getText().toString());
+        user.put("mutualista", mutualista.getText().toString());
+        user.put("emergencia", emergencia.getText().toString());
+        user.put("telefono", telefono.getText().toString());
+        user.put("domicilio", domicilio.getText().toString());
+        user.put("mail", mail.getText().toString());
+        user.put("cuota", cuota.getText().toString());
+        user.put("genero", genero.getText().toString());
+        user.put("patologias", patologias.getText().toString());
 
-        String seleccion = lista.getSelectedItem().toString();
         if (!seleccion.isEmpty()) {
-            if(!nombre_string.isEmpty() && !mutualista_string.isEmpty() && !telefono_string.isEmpty() && !cuota_string.isEmpty() ){
-                ContentValues registro = new ContentValues();
+            db.collection("clientes").document(seleccion).update(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(getApplicationContext(), "Datos actualizados con éxito", Toast.LENGTH_SHORT).show();
+                }
+            });
 
-                registro.put("nombre", nombre_string);
-                registro.put("mutualista", mutualista_string);
-                registro.put("telefono", telefono_string);
-                registro.put("cuota", cuota_string);
-                registro.put("patologias", patologias_string);
-
-                int cantidad = BaseDeDatos.update("clientes", registro, "nombre='" + seleccion + "'", null);
-
-                BaseDeDatos.close();
-                Toast.makeText(this, "Cambios guardados", Toast.LENGTH_SHORT).show();
-            }else{
-                Toast.makeText(this, "Debes llenar todos los campos", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(this, "Debe seleccionar un cliente", Toast.LENGTH_SHORT).show();
         }
     }
 }

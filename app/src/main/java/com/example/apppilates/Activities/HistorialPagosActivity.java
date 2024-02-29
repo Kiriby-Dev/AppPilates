@@ -10,14 +10,27 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.apppilates.Adapters.ClienteAdapter;
 import com.example.apppilates.AdminSQLiteOpenHelper;
 import com.example.apppilates.Adapters.HistorialAdapter;
+import com.example.apppilates.Cliente;
+import com.example.apppilates.Fragments.pagosFragment;
 import com.example.apppilates.R;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 
 public class HistorialPagosActivity extends AppCompatActivity {
 
+    FirebaseFirestore db;
     RecyclerView lista;
     TextView texto;
 
@@ -29,40 +42,55 @@ public class HistorialPagosActivity extends AppCompatActivity {
         lista = findViewById(R.id.listaPagados);
         texto = findViewById(R.id.historialTextView);
 
-        ArrayList<String> nombres = obtenerListaClientesPagos();
+        db = FirebaseFirestore.getInstance();
 
-        lista.setVisibility(View.VISIBLE);
-        lista.setLayoutManager(new LinearLayoutManager(this));
-        lista.setAdapter(new HistorialAdapter(this, nombres));
+        obtenerListaClientesPagos(new FirestoreCallback() {
+            @Override
+            public void onCallback(ArrayList<Cliente> clientes) {
+                // Se llama a este método cuando se han obtenido los datos de Firestore
+                lista.setVisibility(View.VISIBLE);
+                lista.setLayoutManager(new LinearLayoutManager(HistorialPagosActivity.this));
+                lista.setAdapter(new HistorialAdapter(HistorialPagosActivity.this, clientes));
+            }
+        });
     }
 
-    public ArrayList<String> obtenerListaClientesPagos() {
-        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this, "administracion", null, 1);
-        SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
-
-        Cursor fila = BaseDeDatos.rawQuery("SELECT * FROM pagos WHERE pagado = 1 ORDER BY anio DESC, mes DESC", null);
-        ArrayList<String> nombres = new ArrayList<>();
-
-        try {
-            if (fila != null && fila.moveToFirst()) {
-                do {
-                    String nombre = fila.getString(fila.getColumnIndex("nombre_cliente"));
-                    String fecha = fila.getString(fila.getColumnIndex("fecha"));
-                    Cursor datosCliente = BaseDeDatos.rawQuery("SELECT cuota FROM clientes WHERE nombre = '" + nombre + "'", null);
-                    if (datosCliente != null && datosCliente.moveToFirst()) {
-                        String cuota = datosCliente.getString(datosCliente.getColumnIndex("cuota"));
-                        nombres.add(nombre + " - $" + cuota + " - " + fecha);
+    public void obtenerListaClientesPagos(FirestoreCallback callback) {
+        db.collection("pagos").whereEqualTo("pagado", true).get().addOnSuccessListener(queryDocumentSnapshots -> {
+            ArrayList<Cliente> clientes = new ArrayList<>();
+            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                String cedula = document.getString("cedula");
+                String fecha = document.getString("fecha");
+                db.collection("clientes").whereEqualTo("cedula", cedula).get().addOnSuccessListener(clienteQuerySnapshot -> {
+                    for (QueryDocumentSnapshot clienteDocument : clienteQuerySnapshot) {
+                        String nombre = clienteDocument.getString("nombre");
+                        String cuota = clienteDocument.getString("cuota");
+                        Cliente cliente = new Cliente(nombre, cedula, cuota, fecha);
+                        clientes.add(cliente);
                     }
-                    datosCliente.close();
-                } while (fila.moveToNext());
-            }
-        } finally {
-            if (fila != null) {
-                fila.close();
-            }
-            BaseDeDatos.close(); // Cerrar la base de datos
-        }
+                    // Ordenar los clientes por fecha
+                    Collections.sort(clientes, new Comparator<Cliente>() {
+                        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-        return nombres;
+                        @Override
+                        public int compare(Cliente cliente1, Cliente cliente2) {
+                            try {
+                                Date fechaCliente1 = dateFormat.parse(cliente1.getFecha());
+                                Date fechaCliente2 = dateFormat.parse(cliente2.getFecha());
+                                return fechaCliente1.compareTo(fechaCliente2);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                                return 0;
+                            }
+                        }
+                    });
+                    callback.onCallback(clientes);
+                });
+            }
+        });
+    }
+
+    interface FirestoreCallback {
+        void onCallback(ArrayList<Cliente> clientes);
     }
 }

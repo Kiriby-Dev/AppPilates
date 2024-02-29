@@ -28,7 +28,7 @@
                 android:padding="32dp">
 
                 <TextView
-                    android:id="@+id/nombreTextView"
+                    android:id="@+id/nombreTextViewSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Seleccione un cliente"
@@ -36,12 +36,15 @@
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-                <Spinner
+                <EditText
                     android:id="@+id/listaClientesBuscar"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/spinner_design" />
+                    android:background="@drawable/edittext_background"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:padding="9dp" />
 
                 <Button
                     android:id="@+id/registrarButton"
@@ -53,64 +56,224 @@
                     android:text="BUSCAR"
                     android:textSize="20sp" />
 
+                <TextView
+                    android:id="@+id/cedulaTextViewBuscar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Cedula"
+                    android:textColor="#5D3587"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/cedulaEditTextBuscar"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/edittext_background"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:padding="9dp" />>
+
+                <TextView
+                    android:id="@+id/nombreTextViewBuscar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Nombres"
+                    android:textColor="#5D3587"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
                 <EditText
                     android:id="@+id/nombreEditTextBuscar"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/edittext_background"
                     android:ems="10"
                     android:inputType="text"
-                    android:padding="9dp"
-                    android:text="Nombre"
-                    android:textColor="#5D3587" />
+                    android:padding="9dp" />
+
+                <TextView
+                    android:id="@+id/apellidoTextViewBuscar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Apellidos"
+                    android:textColor="#5D3587"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/apellidoEditTextBuscar"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/edittext_background"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:padding="9dp" />
+
+                <TextView
+                    android:id="@+id/mutualistaTextViewBuscar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Mutualista"
+                    android:textColor="#5D3587"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/mutualistaEditTextBuscar"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/edittext_background"
                     android:ems="10"
                     android:inputType="text"
-                    android:padding="9dp"
-                    android:text="Mutualista/Emergencia"
-                    android:textColor="#5D3587" />
+                    android:padding="9dp" />
+
+                <TextView
+                    android:id="@+id/emergenciaTextViewBuscar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Emergencia Movil"
+                    android:textColor="#5D3587"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/emergenciaEditTextBuscar"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/edittext_background"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:padding="9dp" />
+
+                <TextView
+                    android:id="@+id/telefonoTextViewBuscar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Celular"
+                    android:textColor="#5D3587"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/telefonoEditTextBuscar"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/edittext_background"
+                    android:ems="10"
+                    android:inputType="phone"
+                    android:padding="9dp" />
+
+                <TextView
+                    android:id="@+id/domicilioTextViewBuscar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
+                    android:text="Domicilio"
+                    android:textColor="#5D3587"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/domicilioEditTextBuscar"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/edittext_background"
                     android:ems="10"
                     android:inputType="text"
-                    android:padding="9dp"
-                    android:text="Teléfono"
-                    android:textColor="#5D3587" />
+                    android:padding="9dp" />
+
+                <TextView
+                    android:id="@+id/mailTextViewBuscar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Mail"
+                    android:textColor="#5D3587"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/mailEditTextBuscar"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/edittext_background"
+                    android:ems="10"
+                    android:inputType="text"
+                    android:padding="9dp" />
+
+                <TextView
+                    android:id="@+id/cuotaTextViewBuscar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Cuota"
+                    android:textColor="#5D3587"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/cuotaEditTextBuscar"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/edittext_background"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:padding="9dp" />
+
+                <TextView
+                    android:id="@+id/generoTextViewBuscar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
+                    android:text="Género"
+                    android:textColor="#5D3587"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/generoEditTextBuscar"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/edittext_background"
                     android:ems="10"
                     android:inputType="text"
-                    android:padding="9dp"
-                    android:text="Cuota"
-                    android:textColor="#5D3587" />
+                    android:padding="9dp" />
+
+                <TextView
+                    android:id="@+id/patologiasTextViewBuscar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Patologias"
+                    android:textColor="#5D3587"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/patologiasEditTextBuscar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/edittext_background"
                     android:ems="10"
                     android:gravity="start|top"
-                    android:text="Patologias"
-                    android:textColor="#5D3587"
                     android:inputType="textMultiLine"
                     android:lines="7"
                     android:overScrollMode="always"

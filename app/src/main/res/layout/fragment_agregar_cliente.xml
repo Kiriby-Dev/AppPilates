@@ -20,7 +20,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintVertical_bias="1.0">
 
             <LinearLayout
                 android:id="@+id/linearLayout2"
@@ -31,10 +31,31 @@
                 android:padding="32dp">
 
                 <TextView
+                    android:id="@+id/cedulaTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cedula"
+                    android:textColor="#5D3587"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/cedulaEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/edittext_background"
+                    android:ems="10"
+                    android:hint="Ingrese cédula"
+                    android:inputType="number"
+                    android:padding="9dp" />>
+
+                <TextView
                     android:id="@+id/nombreTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Nombre"
+                    android:layout_marginTop="32dp"
+                    android:text="Nombres"
                     android:textColor="#5D3587"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -46,7 +67,28 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/edittext_background"
                     android:ems="10"
-                    android:hint="Ingrese Nombre"
+                    android:hint="Ingrese Nombres"
+                    android:inputType="text"
+                    android:padding="9dp" />
+
+                <TextView
+                    android:id="@+id/apellidoTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Apellidos"
+                    android:textColor="#5D3587"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/apellidoEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/edittext_background"
+                    android:ems="10"
+                    android:hint="Ingrese Apellidos"
                     android:inputType="text"
                     android:padding="9dp" />
 
@@ -55,7 +97,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
-                    android:text="Mutualista/Emergencia"
+                    android:text="Mutualista"
                     android:textColor="#5D3587"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -67,7 +109,28 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/edittext_background"
                     android:ems="10"
-                    android:hint="Ingrese Servicio Médico"
+                    android:hint="Ingrese Mutualista"
+                    android:inputType="text"
+                    android:padding="9dp" />
+
+                <TextView
+                    android:id="@+id/emergenciaTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Emergencia Movil"
+                    android:textColor="#5D3587"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/emergenciaEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/edittext_background"
+                    android:ems="10"
+                    android:hint="Ingrese Emergencia Movil"
                     android:inputType="text"
                     android:padding="9dp" />
 
@@ -76,7 +139,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
-                    android:text="Teléfono"
+                    android:text="Celular"
                     android:textColor="#5D3587"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -88,8 +151,50 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/edittext_background"
                     android:ems="10"
-                    android:hint="Ingrese Teléfono"
+                    android:hint="Ingrese Celular"
                     android:inputType="phone"
+                    android:padding="9dp" />
+
+                <TextView
+                    android:id="@+id/domicilioTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Domicilio"
+                    android:textColor="#5D3587"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/domicilioEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/edittext_background"
+                    android:ems="10"
+                    android:hint="Ingrese Domicilio"
+                    android:inputType="text"
+                    android:padding="9dp" />
+
+                <TextView
+                    android:id="@+id/mailTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Mail"
+                    android:textColor="#5D3587"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/mailEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/edittext_background"
+                    android:ems="10"
+                    android:hint="Ingrese Mail"
+                    android:inputType="text"
                     android:padding="9dp" />
 
                 <TextView
@@ -112,6 +217,50 @@
                     android:hint="Ingrese Cuota"
                     android:inputType="number"
                     android:padding="9dp" />
+
+                <TextView
+                    android:id="@+id/generoTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:text="Género"
+                    android:textColor="#5D3587"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioGroup
+                        android:id="@+id/radioGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:checkedButton="@+id/radioButton1"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/radioButton1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Masculino" />
+
+                        <RadioButton
+                            android:id="@+id/radioButton2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="25dp"
+                            android:text="Femenino" />
+
+                        <RadioButton
+                            android:id="@+id/radioButton3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="25dp"
+                            android:text="Otro" />
+                    </RadioGroup>
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/patologiasTextView"
@@ -139,22 +288,6 @@
                     android:scrollbarStyle="insideInset"
                     android:scrollbars="vertical"
                     android:scrollHorizontally="false" />
-
-                <TextView
-                    android:id="@+id/ejerciciosNoTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    android:text="Ejercicios no habilitados"
-                    android:textColor="#5D3587"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <SearchView
-                    android:id="@+id/searchAgregarCliente"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"/>
 
                 <Button
                     android:id="@+id/registrarButton"

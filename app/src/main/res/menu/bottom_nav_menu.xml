@@ -10,21 +10,9 @@
     <item
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="Ejercicio"
-        android:icon="@drawable/baseline_add_task_24"
-        android:id="@+id/ejercicios"/>
-    <item
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:title="Pagos"
         android:icon="@drawable/baseline_currency_exchange_24"
         android:id="@+id/pagos"/>
-    <item
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:title="Calendario"
-        android:icon="@drawable/baseline_calendar_month_24"
-        android:id="@+id/calendario"/>
     <item
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

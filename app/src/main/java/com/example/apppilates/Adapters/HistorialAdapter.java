@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.apppilates.Cliente;
 import com.example.apppilates.R;
 
 import java.util.ArrayList;
@@ -17,9 +18,9 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
 
     View view;
     Context context;
-    ArrayList<String> arrayList;
+    ArrayList<Cliente> arrayList;
 
-    public HistorialAdapter(Context context, ArrayList<String> arrayList) {
+    public HistorialAdapter(Context context, ArrayList<Cliente> arrayList) {
         this.context = context;
         this.arrayList = arrayList;
     }
@@ -33,8 +34,11 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull HistorialAdapter.ViewHolder holder, int position) {
-        String clienteNombre = arrayList.get(position);
-        holder.nombre.setText(clienteNombre);
+        Cliente cliente = arrayList.get(position);
+
+        holder.nombre.setText(cliente.getNombre());
+        holder.cedula.setText(cliente.getCedula());
+        holder.cuotaYfecha.setText("$" + cliente.getCuota() + " - " + cliente.getFecha());
     }
 
     @Override
@@ -45,10 +49,14 @@ public class HistorialAdapter extends RecyclerView.Adapter<HistorialAdapter.View
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView nombre;
+        TextView cedula;
+        TextView cuotaYfecha;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            nombre = itemView.findViewById(R.id.textViewNombre);
+            nombre = itemView.findViewById(R.id.historialNombre);
+            cedula = itemView.findViewById(R.id.historialCedula);
+            cuotaYfecha = itemView.findViewById(R.id.historialCuotayFecha);
         }
     }
 }

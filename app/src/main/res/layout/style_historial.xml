@@ -2,16 +2,40 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/list_background"
     android:layout_marginTop="7dp">
 
-    <TextView
-        android:id="@+id/textViewNombre"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:text="Nombre"
-        android:textColor="#5D3587"
-        android:textSize="18sp"
-        android:padding="9dp"/>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="132dp"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/historialNombre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="Nombre"
+            android:textColor="#5D3587"
+            android:textSize="18sp"
+            android:padding="9dp"/>
+        <TextView
+            android:id="@+id/historialCedula"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="Cedula"
+            android:textColor="#5D3587"
+            android:textSize="18sp"
+            android:padding="9dp"/>
+        <TextView
+            android:id="@+id/historialCuotayFecha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="Cuota y Fecha"
+            android:textColor="#5D3587"
+            android:textSize="18sp"
+            android:padding="9dp"/>
+    </LinearLayout>
 
 </RelativeLayout>

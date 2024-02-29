@@ -14,7 +14,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.apppilates.AdminSQLiteOpenHelper;
+import com.example.apppilates.Cliente;
 import com.example.apppilates.R;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,15 +25,16 @@ import java.util.Calendar;
 public class ClienteAdapter extends RecyclerView.Adapter<ClienteAdapter.ViewHolder> {
 
     public interface OnCheckedChangeListener {
-        void onItemCheckedChanged(String nombreCliente, boolean isChecked);
+        void onItemCheckedChanged(Cliente cliente, boolean isChecked);
     }
 
+    FirebaseFirestore db;
     View view;
     Context context;
-    ArrayList<String> arrayList;
+    ArrayList<Cliente> arrayList;
     OnCheckedChangeListener listener;
 
-    public ClienteAdapter(Context context, ArrayList<String> arrayList, OnCheckedChangeListener listener) {
+    public ClienteAdapter(Context context, ArrayList<Cliente> arrayList, OnCheckedChangeListener listener) {
         this.context = context;
         this.arrayList = arrayList;
         this.listener = listener;
@@ -40,23 +44,33 @@ public class ClienteAdapter extends RecyclerView.Adapter<ClienteAdapter.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         view = LayoutInflater.from(context).inflate(R.layout.style_lista, parent, false);
+        db = FirebaseFirestore.getInstance();
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ClienteAdapter.ViewHolder holder, int position) {
         if (!arrayList.isEmpty() && position < arrayList.size()) {
-            String clienteNombre = arrayList.get(position);
+            Cliente cliente = arrayList.get(position);
 
-            holder.nombre.setText(clienteNombre);
-            boolean isChecked = obtenerEstadoCheckBox(clienteNombre);
-            holder.checkBox.setChecked(isChecked);
+            holder.nombre.setText(cliente.getNombre());
+            holder.cedula.setText(cliente.getCedula());
+            holder.cuotaYfecha.setText("$" + cliente.getCuota() + " - " + cliente.getFecha());
+            obtenerEstadosCheckBox(arrayList, new CheckBoxStateCallback() {
+                @Override
+                public void onCheckBoxStateChanged(String cedula, boolean isChecked) {
+                    // Verificar si el cliente actual coincide con la cédula obtenida y actualizar el estado del CheckBox
+                    if (cliente.getCedula().equals(cedula)) {
+                        holder.checkBox.setChecked(isChecked);
+                    }
+                }
+            });
 
             holder.checkBox.setOnCheckedChangeListener((buttonView, isCheckedNew) -> {
                 // Actualizar el estado del CheckBox en la base de datos
-                actualizarEstadoCheckBox(clienteNombre, isCheckedNew);
+                actualizarEstadoCheckBox(cliente, isCheckedNew);
 
-                listener.onItemCheckedChanged(clienteNombre, isCheckedNew);
+                listener.onItemCheckedChanged(cliente, isCheckedNew);
 
                 if (isCheckedNew) {
                     // Eliminar el elemento de la lista
@@ -65,6 +79,55 @@ public class ClienteAdapter extends RecyclerView.Adapter<ClienteAdapter.ViewHold
                         arrayList.remove(adapterPosition);
                         notifyItemRemoved(adapterPosition);
                     }
+                }
+            });
+        }
+    }
+
+    public interface CheckBoxStateCallback {
+        void onCheckBoxStateChanged(String cedula, boolean isChecked);
+    }
+
+    public void obtenerEstadosCheckBox(ArrayList<Cliente> clientes, CheckBoxStateCallback callback) {
+        ArrayList<String> cedulas = new ArrayList<>();
+        for (Cliente cliente : clientes) {
+            cedulas.add(cliente.getCedula());
+        }
+        db.collection("pagos").whereIn("cedula", cedulas).get().addOnSuccessListener(queryDocumentSnapshots -> {
+            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                String cedula = document.getString("cedula");
+                boolean pagado = document.getBoolean("pagado");
+                // Actualizar el estado del CheckBox en función de la cédula y el estado del pago
+                callback.onCheckBoxStateChanged(cedula, pagado);
+            }
+        });
+    }
+
+    private void actualizarEstadoCheckBox(Cliente cliente, boolean isChecked) {
+
+        String cedula = cliente.getCedula();
+        String fecha = cliente.getFecha();
+
+        String[] partes = fecha.split("/");
+        int month = Integer.parseInt(partes[0]);
+        int year = Integer.parseInt(partes[1]);
+
+        if (isChecked) {
+            // Actualizar el estado del pago en la colección "pagos" de Firestore
+            db.collection("pagos").whereEqualTo("cedula", cedula).whereEqualTo("mes", month).whereEqualTo("año", year).get().addOnSuccessListener(queryDocumentSnapshots -> {
+                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                    document.getReference().update("pagado", true);
+
+                    Calendar fechaActual = Calendar.getInstance();
+                    int añoActual = fechaActual.get(Calendar.YEAR);
+                    int mesActual = fechaActual.get(Calendar.MONTH) + 1;
+                    int diaActual = fechaActual.get(Calendar.DAY_OF_MONTH);
+                    String anioActualString = String.valueOf(añoActual);
+                    String mesActualString = String.valueOf(mesActual);
+                    String diaActualString = String.valueOf(diaActual);
+
+                    String fechaPago = diaActualString + "/" + mesActualString + "/" + anioActualString;
+                    document.getReference().update("fecha", fechaPago);
                 }
             });
         }
@@ -79,83 +142,15 @@ public class ClienteAdapter extends RecyclerView.Adapter<ClienteAdapter.ViewHold
 
         CheckBox checkBox;
         TextView nombre;
+        TextView cedula;
+        TextView cuotaYfecha;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             nombre = itemView.findViewById(R.id.textViewNombre);
+            cedula = itemView.findViewById(R.id.textViewCedula);
+            cuotaYfecha = itemView.findViewById(R.id.textViewCuotayFecha);
             checkBox = itemView.findViewById(R.id.checkBoxPago);
         }
-    }
-
-    private boolean obtenerEstadoCheckBox(String nombreCliente) {
-        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(context, "administracion", null, 1);
-        SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
-        String[] columns = {"pagado"};
-        String selection = "nombre_cliente=?";
-        String[] selectionArgs = {nombreCliente};
-
-        Cursor cursor = BaseDeDatos.query("pagos", columns, selection, selectionArgs, null, null, null);
-
-        boolean isChecked = false;
-        if (cursor != null && cursor.moveToFirst()) {
-            isChecked = cursor.getInt(cursor.getColumnIndex("pagado")) == 1;
-            cursor.close();
-        }
-        BaseDeDatos.close();
-        return isChecked;
-    }
-
-    private void actualizarEstadoCheckBox(String datos, boolean isChecked) {
-        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(context, "administracion", null, 1);
-        SQLiteDatabase BaseDeDatos = admin.getWritableDatabase();
-
-        float cuota = 0.0f;
-
-        ContentValues valores = new ContentValues();
-        ContentValues valores_mensual = new ContentValues();
-
-        String[] partes = datos.split(" - ");
-        String nombreCliente = partes[0];
-        String[] fecha = partes[2].split("/");
-
-
-        int month = Integer.parseInt(fecha[0]);
-        int year = Integer.parseInt(fecha[1]);
-        Calendar calendar = Calendar.getInstance();
-        int diaPago = calendar.get(Calendar.DAY_OF_MONTH);
-        int mesPago = calendar.get(Calendar.MONTH) + 1;
-        int anioPago = calendar.get(Calendar.YEAR);
-
-        if(isChecked) {
-            valores.put("pagado", 1);
-            valores.put("nombre_cliente", nombreCliente);
-            valores.put("mes", month);
-            valores.put("anio", year);
-            valores.put("fecha", diaPago + "/" + mesPago + "/" + anioPago);
-        }
-
-        BaseDeDatos.update("pagos", valores, "nombre_cliente='" + nombreCliente + "'AND mes='" + month + "'AND anio='" + year +"'", null);
-
-        Cursor cursor = BaseDeDatos.rawQuery("SELECT cuota FROM clientes WHERE nombre = '" + nombreCliente + "'", null);
-
-        if (cursor != null && cursor.moveToFirst()) {
-            // Obtener la cuota como un String desde la base de datos
-            cuota = cursor.getFloat(cursor.getColumnIndex("cuota"));
-            cursor.close();
-        }
-
-        Cursor cursor1 = BaseDeDatos.rawQuery("SELECT * FROM balance_mensual WHERE mes = '" + month + "' AND anio = '" + year + "'", null);
-
-        if (cursor1 != null && cursor1.moveToFirst()) {
-            valores_mensual.put("mes", month);
-            valores_mensual.put("anio", year);
-            valores_mensual.put("balance", cursor1.getFloat(cursor1.getColumnIndex("balance")) + cuota);
-            valores_mensual.put("total", cursor1.getFloat(cursor1.getColumnIndex("total")));
-            cursor1.close();
-        }
-
-        BaseDeDatos.update("balance_mensual", valores_mensual, "mes='" + month + "'AND anio='" + year +"'", null);
-
-        BaseDeDatos.close();
     }
 }
