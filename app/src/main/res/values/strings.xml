@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">AppPilates</string>
+    <string name="app_name">Activá Pilates</string>
     <string name="ek_img_content">ExportKit Image</string>
     <string name="welcome_string">Welcome</string>
     <string name="to_twitch_streaming_string">to Twitch Streaming</string>

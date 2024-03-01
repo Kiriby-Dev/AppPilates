@@ -23,7 +23,7 @@
                 android:id="@+id/linearLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#FFFFFF"
+                android:background="#F2f3f4"
                 android:orientation="vertical"
                 android:padding="32dp">
 
@@ -32,7 +32,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Seleccione un cliente"
-                    android:textColor="#5D3587"
+                    android:textColor="#265073"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -62,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
                     android:text="Cedula"
-                    android:textColor="#5D3587"
+                    android:textColor="#265073"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -82,7 +82,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
                     android:text="Nombres"
-                    android:textColor="#5D3587"
+                    android:textColor="#265073"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -102,7 +102,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
                     android:text="Apellidos"
-                    android:textColor="#5D3587"
+                    android:textColor="#265073"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -122,7 +122,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
                     android:text="Mutualista"
-                    android:textColor="#5D3587"
+                    android:textColor="#265073"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -142,7 +142,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
                     android:text="Emergencia Movil"
-                    android:textColor="#5D3587"
+                    android:textColor="#265073"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -162,7 +162,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
                     android:text="Celular"
-                    android:textColor="#5D3587"
+                    android:textColor="#265073"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -182,7 +182,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
                     android:text="Domicilio"
-                    android:textColor="#5D3587"
+                    android:textColor="#265073"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -202,7 +202,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
                     android:text="Mail"
-                    android:textColor="#5D3587"
+                    android:textColor="#265073"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -222,7 +222,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
                     android:text="Cuota"
-                    android:textColor="#5D3587"
+                    android:textColor="#265073"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -242,7 +242,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
                     android:text="Género"
-                    android:textColor="#5D3587"
+                    android:textColor="#265073"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -262,7 +262,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
                     android:text="Patologias"
-                    android:textColor="#5D3587"
+                    android:textColor="#265073"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 

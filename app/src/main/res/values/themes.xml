@@ -2,7 +2,13 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.AppPilates" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/azul</item>
+        <item name="colorSecondary">@color/celeste</item>
+    </style>
+
+    <style name="MyBottomNavigationShape">
+        <item name="cornerSize">50%</item> <!-- Controla la curvatura del fondo del ícono seleccionado -->
+        <item name="android:background">@color/celeste2</item> <!-- Cambia el color de fondo del ícono seleccionado -->
     </style>
 
     <style name="Theme.AppPilates" parent="Base.Theme.AppPilates" />

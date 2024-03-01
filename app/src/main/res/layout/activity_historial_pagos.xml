@@ -25,7 +25,7 @@
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
                 android:text="Historial de Pagos"
-                android:textColor="#5D3587"
+                android:textColor="#265073"
                 android:textSize="32dp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"

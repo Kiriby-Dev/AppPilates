@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="Nombre"
-            android:textColor="#5D3587"
+            android:textColor="#265073"
             android:textSize="18sp"
             android:padding="9dp"/>
         <TextView
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="Cedula"
-            android:textColor="#5D3587"
+            android:textColor="#265073"
             android:textSize="18sp"
             android:padding="9dp"/>
         <TextView
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="Cuota y Fecha"
-            android:textColor="#5D3587"
+            android:textColor="#265073"
             android:textSize="18sp"
             android:padding="9dp"/>
     </LinearLayout>
