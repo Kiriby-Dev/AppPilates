@@ -1,5 +1,8 @@
 package com.example.apppilates;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
@@ -14,6 +17,7 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -104,6 +108,12 @@ public class activity_busqueda_cliente extends AppCompatActivity {
                     genero.setText(documentSnapshot.getString("genero"));
                     patologias.setText(documentSnapshot.getString("patologias"));
                 }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                // Manejar el caso en que la búsqueda falla
+                Toast.makeText(getBaseContext(), "Esa cédula no está registrada", Toast.LENGTH_SHORT).show();
             }
         });
     }

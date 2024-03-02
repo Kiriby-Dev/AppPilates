@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:translationY="-5dp"
     tools:context=".Fragments.AgregarClienteFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -207,16 +206,13 @@
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-                <EditText
-                    android:id="@+id/cuotaEditText"
+                <Spinner
+                    android:id="@+id/spinnerCuota"
+                    android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/edittext_background"
-                    android:ems="10"
-                    android:hint="Ingrese Cuota"
-                    android:inputType="number"
-                    android:padding="9dp" />
+                    android:popupBackground="@color/celeste2"
+                    android:background="@drawable/spinner_design"/>
 
                 <TextView
                     android:id="@+id/generoTextView"

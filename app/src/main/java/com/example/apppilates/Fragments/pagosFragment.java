@@ -301,8 +301,10 @@ public class pagosFragment extends Fragment implements ClienteAdapter.OnCheckedC
             for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                 // Obtener la cuota como un Float desde Firestore
                 String cuota_string = document.getString("cuota");
-                float cuota = Float.parseFloat(cuota_string);
-                total[0] += cuota; // Actualizar el valor de total dentro del lambda
+                if (!cuota_string.isEmpty()) {
+                    float cuota = Float.parseFloat(cuota_string);
+                    total[0] += cuota; // Actualizar el valor de total dentro del lambda
+                }
             }
             // Llamar al callback con el total calculado
             callback.onTotalReceived(total[0]);

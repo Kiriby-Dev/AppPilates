@@ -1,3 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.AppPilates" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/azul</item>
+        <item name="colorSecondary">@color/celeste</item>
+    </style>
+
+    <style name="Theme.AppPilates" parent="Base.Theme.AppPilates" />
+
+    <style name="MyBottomNavigationStyle" parent="Widget.MaterialComponents.BottomNavigationView">
+        <!-- Ajustar el fondo del BottomNavigationView -->
+        <item name="android:background">@color/celeste</item>
+        <item name="itemBackground">@color/celeste</item>
+    </style>
+
 </resources>
